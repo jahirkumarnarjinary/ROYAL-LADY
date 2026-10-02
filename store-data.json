@@ -45,23 +45,6 @@
   ],
   "products": [
     {
-      "id": "prod_3",
-      "title": "Heritage Bridal Velvet Embroidered Lehenga Choli",
-      "category": "Lehengas",
-      "price": 8999,
-      "originalPrice": 18999,
-      "discount": "53% OFF",
-      "sizes": [
-        "Semi-Stitched",
-        "Free Size"
-      ],
-      "images": [
-        "https://images.unsplash.com/photo-1583391733975-0d2e8b23f851?auto=format&fit=crop&w=600&q=80"
-      ],
-      "description": "Royal maroon velvet bridal lehenga with heavy stone hand-embroidery and dual net dupattas.",
-      "rating": 5
-    },
-    {
       "id": "prod_4",
       "title": "Bridal Kundan & Pearl Gold-Plated Jewellery Set",
       "category": "Jewellery",
@@ -76,26 +59,6 @@
       ],
       "description": "Exquisite bridal choker set with matching earrings and maang tikka.",
       "rating": 5
-    },
-    {
-      "id": "prod_5",
-      "title": "High-Waist Stretchable Denim Bell-Bottom Pants",
-      "category": "Jeans & Pants",
-      "price": 1299,
-      "originalPrice": 2599,
-      "discount": "50% OFF",
-      "sizes": [
-        "26",
-        "28",
-        "30",
-        "32",
-        "34"
-      ],
-      "images": [
-        "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=600&q=80"
-      ],
-      "description": "Premium breathable stretch denim engineered for all-day comfort and fit.",
-      "rating": 4.7
     },
     {
       "id": "prod_6",
