@@ -10,7 +10,6 @@ class StoreEngine {
   }
 
   async load() {
-    // 1. Check local cache first for instant load
     const cached = localStorage.getItem("RL_CACHE_DATA");
     if (cached) {
       try {
@@ -18,12 +17,10 @@ class StoreEngine {
       } catch (e) {}
     }
 
-    // 2. Fetch fresh live data from GitHub repository
     try {
       const res = await fetch(this.rawUrl);
       if (res.ok) {
         const fresh = await res.json();
-        // Preserve local session users/orders if GitHub commit is in transit
         if (this.data) {
           const localUsers = this.data.users || [];
           const remoteUsers = fresh.users || [];
@@ -43,14 +40,14 @@ class StoreEngine {
         this.saveLocal();
       }
     } catch (e) {
-      console.warn("Offline / Local relay mode active");
+      console.warn("Operating with local relay database");
     }
 
     if (!this.data) {
       this.data = {
         adminConfig: {
-          adminIdHash: "8b78ec2ad6dae1b2f4f107f9cbf561876800532f14624b7a12a52bb888a705e4",
-          adminPassHash: "9e5c4a3ffb1fa0435ffea49a9042b4d5a9fa264dfa98e1cb1cfbc0b29ff04b28",
+          adminId: "jahirnarjinary04@gmail.com",
+          adminPass: "Jahir@7047",
           upiId: "nikashnarjinary75@okaxis",
           upiName: "ROYAL LADY STORE",
           storePhone: "7384512297",
@@ -83,12 +80,11 @@ class StoreEngine {
     localStorage.setItem("RL_CACHE_DATA", JSON.stringify(this.data));
   }
 
-  // Live Cloud Synchronizer directly targeting GitHub REST API
   async syncToCloud(commitMsg = "Store Data Synchronized") {
     this.saveLocal();
     const token = sessionStorage.getItem("RL_SECURE_TOKEN");
     if (!token) {
-      return { success: false, message: "Token missing. Please re-authenticate." };
+      return { success: false, message: "Token missing. Please login again with GitHub token." };
     }
 
     let sha = null;
@@ -104,7 +100,7 @@ class StoreEngine {
         sha = fileInfo.sha;
       }
     } catch (err) {
-      console.error("SHA extraction error:", err);
+      console.error("SHA fetching error:", err);
     }
 
     const utf8Bytes = unescape(encodeURIComponent(JSON.stringify(this.data, null, 2)));
@@ -122,13 +118,13 @@ class StoreEngine {
       });
 
       if (pushRes.ok) {
-        return { success: true, message: "Live Global Sync Complete! Updated across all devices worldwide." };
+        return { success: true, message: "Live Global Sync Complete! Updated live across all devices worldwide." };
       } else {
         const errJson = await pushRes.json();
         return { success: false, message: `GitHub Sync Error (${pushRes.status}): ${errJson.message || 'Push rejected'}` };
       }
     } catch (err) {
-      return { success: false, message: "Network connection failure during cloud commit." };
+      return { success: false, message: "Network error during cloud commit." };
     }
   }
 }

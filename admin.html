@@ -18,17 +18,17 @@
 </head>
 <body class="bg-[#05070e] text-slate-100 min-h-screen p-3 sm:p-6 selection:bg-pink-600 selection:text-white">
 
-  <!-- ENCRYPTED AUTHENTICATION GATE (TRIPLE SECURITY: ID + PASSWORD + GITHUB TOKEN) -->
+  <!-- ADMIN LOGIN GATE -->
   <div id="adminAuthScreen" class="max-w-md mx-auto mt-16 glass border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl text-xs space-y-4">
     <div class="text-center mb-6">
       <div class="h-12 w-12 rounded-2xl gold-gradient flex items-center justify-center mx-auto mb-3 shadow-lg shadow-pink-500/20">
         <i class="fa-solid fa-shield-halved text-white text-lg"></i>
       </div>
-      <h2 class="text-lg font-bold text-white uppercase tracking-wider">Royal Lady Security Gate</h2>
-      <p class="text-slate-400 text-[11px]">Triple-Locked Cryptographic Authorization</p>
+      <h2 class="text-lg font-bold text-white uppercase tracking-wider">Royal Lady Commander</h2>
+      <p class="text-slate-400 text-[11px]">Direct Store Owner Control Portal</p>
     </div>
 
-    <form onsubmit="handleSecureLogin(event)" class="space-y-3">
+    <form onsubmit="handleDirectLogin(event)" class="space-y-3">
       <div>
         <label class="text-slate-300 font-semibold block mb-1">Admin User ID</label>
         <input id="inAdminId" type="email" placeholder="Enter User ID" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-pink-500">
@@ -45,7 +45,7 @@
       </div>
 
       <div>
-        <label class="text-slate-300 font-semibold block mb-1">GitHub Personal Access Token (Write Scope - ghp_...)</label>
+        <label class="text-slate-300 font-semibold block mb-1">GitHub Personal Access Token (ghp_...)</label>
         <div class="relative">
           <input id="inAdminToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 pr-9 text-white focus:outline-none focus:border-pink-500">
           <button type="button" onclick="togglePass('inAdminToken', 'eyeTokenIcon')" class="absolute right-3 top-2.5 text-slate-400">
@@ -55,7 +55,7 @@
       </div>
 
       <button type="submit" id="btnAdminLogin" class="w-full py-2.5 gold-gradient text-white font-bold rounded-xl shadow-md active:scale-95 transition">
-        Authorize & Unlock Dashboard
+        Login & Open Dashboard
       </button>
       <p id="authErrorMsg" class="text-red-400 text-center font-semibold hidden"></p>
     </form>
@@ -103,7 +103,7 @@
       </button>
     </div>
 
-    <!-- TAB 1: PRODUCT CATALOG MANAGER (UP TO 5 PHOTOS & AUTO COMPRESS) -->
+    <!-- TAB 1: PRODUCT CATALOG MANAGER (UP TO 5 PHOTOS) -->
     <div id="sec-products" class="glass border border-slate-800 p-5 rounded-2xl space-y-4">
       <h2 class="text-xs font-bold text-pink-400 uppercase tracking-wider flex items-center gap-2">
         <i class="fa-solid fa-square-plus"></i> Upload New Product (Up to 5 Photos)
@@ -267,7 +267,7 @@
       </form>
     </div>
 
-    <!-- TAB 6: SECURITY & PAYMENT UPI (WITH HIDE/UNHIDE PASSWORD & TOKEN) -->
+    <!-- TAB 6: SECURITY & PAYMENT UPI -->
     <div id="sec-security" class="glass border border-slate-800 p-5 rounded-2xl hidden space-y-4">
       <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
         <i class="fa-solid fa-shield-halved"></i> Master Credentials & Store UPI ID
@@ -303,15 +303,6 @@
   <script src="store.js"></script>
   <script>
     let db = null;
-    let failedAttempts = parseInt(localStorage.getItem("RL_ADMIN_FAILS") || "0");
-    let lockUntil = parseInt(localStorage.getItem("RL_ADMIN_LOCKED_UNTIL") || "0");
-
-    async function sha256(message) {
-      const msgBuffer = new TextEncoder().encode(message);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
 
     async function initAdmin() {
       db = await window.engine.load();
@@ -338,39 +329,24 @@
       }
     }
 
-    async function handleSecureLogin(e) {
+    function handleDirectLogin(e) {
       e.preventDefault();
-      const now = Date.now();
-      const err = document.getElementById("authErrorMsg");
-
-      if (now < lockUntil) {
-        const remainingMinutes = Math.ceil((lockUntil - now) / 60000);
-        err.textContent = `Security Lockout Active: Too many failed attempts. Try again in ${remainingMinutes} minute(s).`;
-        err.classList.remove("hidden");
-        return;
-      }
-
-      const id = document.getElementById("inAdminId").value.trim().toLowerCase();
+      const id = document.getElementById("inAdminId").value.trim();
       const pass = document.getElementById("inAdminPass").value;
       const token = document.getElementById("inAdminToken").value.trim();
+      const err = document.getElementById("authErrorMsg");
 
       if (!token.startsWith("ghp_")) {
-        err.textContent = "Invalid GitHub Token. Token must start with ghp_";
+        err.textContent = "Error: GitHub Token must start with 'ghp_'";
         err.classList.remove("hidden");
         return;
       }
 
-      const inputIdHash = await sha256(id);
-      const inputPassHash = await sha256(pass);
+      const cfg = db.adminConfig || {};
+      const expectedId = cfg.adminId || "jahirnarjinary04@gmail.com";
+      const expectedPass = cfg.adminPass || "Jahir@7047";
 
-      const cfg = db.adminConfig;
-      const expectedIdHash = cfg.adminIdHash || "8b78ec2ad6dae1b2f4f107f9cbf561876800532f14624b7a12a52bb888a705e4";
-      const expectedPassHash = cfg.adminPassHash || "9e5c4a3ffb1fa0435ffea49a9042b4d5a9fa264dfa98e1cb1cfbc0b29ff04b28";
-
-      if (inputIdHash === expectedIdHash && inputPassHash === expectedPassHash) {
-        localStorage.removeItem("RL_ADMIN_FAILS");
-        localStorage.removeItem("RL_ADMIN_LOCKED_UNTIL");
-
+      if (id.toLowerCase() === expectedId.toLowerCase() && pass === expectedPass) {
         sessionStorage.setItem("RL_ADMIN_SESSION", "ACTIVE");
         sessionStorage.setItem("RL_SECURE_TOKEN", token);
 
@@ -378,16 +354,7 @@
         document.getElementById("adminConsoleScreen").classList.remove("hidden");
         renderConsole();
       } else {
-        failedAttempts++;
-        localStorage.setItem("RL_ADMIN_FAILS", failedAttempts);
-
-        if (failedAttempts >= 3) {
-          const lockTime = Date.now() + 15 * 60 * 1000;
-          localStorage.setItem("RL_ADMIN_LOCKED_UNTIL", lockTime);
-          err.textContent = "Security Alert: 3 failed attempts! Portal locked for 15 minutes.";
-        } else {
-          err.textContent = `Access Denied: Invalid credentials (${3 - failedAttempts} attempt(s) remaining before security lockout).`;
-        }
+        err.textContent = "Error: Invalid Admin User ID or Password.";
         err.classList.remove("hidden");
       }
     }
@@ -408,7 +375,7 @@
     }
 
     function renderConsole() {
-      const cfg = db.adminConfig;
+      const cfg = db.adminConfig || {};
       document.getElementById("setUpiId").value = cfg.upiId || "";
       document.getElementById("setStorePhone").value = cfg.storePhone || "";
       document.getElementById("setStoreEmail").value = cfg.storeEmail || "";
@@ -553,7 +520,6 @@
       }
     }
 
-    // Auto Image Compressor
     function compressImage(file, maxDimension = 500, quality = 0.7) {
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -583,7 +549,7 @@
       e.preventDefault();
       const btn = document.getElementById("btnPublishProd");
       btn.disabled = true;
-      btn.textContent = "Compressing & Syncing to Cloud...";
+      btn.textContent = "Compressing & Publishing...";
 
       const title = document.getElementById("pTitle").value.trim();
       const category = document.getElementById("pCategory").value;
@@ -626,12 +592,12 @@
       if (!db.products) db.products = [];
       db.products.unshift(newProd);
 
-      const syncResult = await window.engine.syncToCloud(`Published Product: ${title}`);
+      const res = await window.engine.syncToCloud(`Added Product: ${title}`);
       e.target.reset();
       btn.disabled = false;
       btn.textContent = "Save & Publish to Live Store Worldwide";
 
-      alert(syncResult.message);
+      alert(res.message);
       renderConsole();
     }
 
@@ -666,11 +632,11 @@
         youtube: document.getElementById("setSocYt").value.trim()
       };
 
-      const syncResult = await window.engine.syncToCloud("Updated About Store & Owner Profile");
+      const res = await window.engine.syncToCloud("Updated Store About & Owner Profile");
       btn.disabled = false;
       btn.textContent = "Save All Store & Owner Details Worldwide";
 
-      alert(syncResult.message);
+      alert(res.message);
       renderConsole();
     }
 
@@ -679,23 +645,23 @@
       const btn = document.getElementById("btnSaveSecurity");
       btn.disabled = true;
 
-      const newId = document.getElementById("setAdminId").value.trim().toLowerCase();
+      const newId = document.getElementById("setAdminId").value.trim();
       const newPass = document.getElementById("setAdminPass").value;
       const newUpi = document.getElementById("setUpiId").value.trim();
 
       if (newId) {
-        db.adminConfig.adminIdHash = await sha256(newId);
+        db.adminConfig.adminId = newId;
       }
       if (newPass) {
-        db.adminConfig.adminPassHash = await sha256(newPass);
+        db.adminConfig.adminPass = newPass;
       }
       if (newUpi) {
         db.adminConfig.upiId = newUpi;
       }
 
-      const syncResult = await window.engine.syncToCloud("Updated Security Credentials & UPI ID");
+      const res = await window.engine.syncToCloud("Updated Security Credentials & UPI ID");
       btn.disabled = false;
-      alert(syncResult.message);
+      alert(res.message);
       renderConsole();
     }
 
@@ -703,19 +669,19 @@
       db.orders[idx].status = "Approved & Confirmed";
       await window.engine.syncToCloud(`Approved Order #${db.orders[idx].id}`);
       renderConsole();
-      alert("Order approved and synced globally!");
+      alert("Order approved and live synced!");
     }
 
     async function rejectOrder(idx) {
       db.orders[idx].status = "Rejected by Store";
       await window.engine.syncToCloud(`Rejected Order #${db.orders[idx].id}`);
       renderConsole();
-      alert("Order marked as Rejected and synced globally.");
+      alert("Order rejected.");
     }
 
     async function updateOrderLocation(idx, loc) {
       db.orders[idx].trackingLocation = loc;
-      await window.engine.syncToCloud(`Updated Location for Order #${db.orders[idx].id}`);
+      await window.engine.syncToCloud(`Updated tracking for order #${db.orders[idx].id}`);
     }
 
     async function updateOrderSchedule(idx, timeText) {
@@ -723,32 +689,32 @@
       if (timeText.toLowerCase().includes("delivered")) {
         db.orders[idx].status = "Delivered";
       }
-      await window.engine.syncToCloud(`Updated Schedule for Order #${db.orders[idx].id}`);
+      await window.engine.syncToCloud(`Updated schedule for order #${db.orders[idx].id}`);
     }
 
     async function updateOrderDeliveryBoy(idx, phone) {
       db.orders[idx].deliveryBoyPhone = phone;
-      await window.engine.syncToCloud(`Updated Delivery Contact for Order #${db.orders[idx].id}`);
+      await window.engine.syncToCloud(`Updated delivery boy contact for order #${db.orders[idx].id}`);
     }
 
     async function resolveReturn(idx, decision) {
       db.orders[idx].returnRequest.status = decision;
-      await window.engine.syncToCloud(`Resolved Return Claim for Order #${db.orders[idx].id}`);
-      alert(`Return claim marked as ${decision} and synced live.`);
+      await window.engine.syncToCloud(`Return claim marked as ${decision}`);
+      alert(`Return claim marked as ${decision}.`);
       renderConsole();
     }
 
     async function deleteProduct(idx) {
       if (confirm("Delete product from live catalog?")) {
         const removed = db.products.splice(idx, 1);
-        await window.engine.syncToCloud(`Deleted Product: ${removed[0]?.title || 'Product'}`);
+        await window.engine.syncToCloud(`Deleted product: ${removed[0]?.title || 'Item'}`);
         renderConsole();
       }
     }
 
     async function toggleBanUser(idx) {
       db.users[idx].isBanned = !db.users[idx].isBanned;
-      await window.engine.syncToCloud(`Updated Ban Status for User: ${db.users[idx].phone}`);
+      await window.engine.syncToCloud(`User moderation: ${db.users[idx].phone}`);
       renderConsole();
     }
 
@@ -756,15 +722,15 @@
       const p = prompt("Enter new password for this customer:");
       if (p) {
         db.users[idx].password = p;
-        await window.engine.syncToCloud(`Admin Reset Password for User: ${db.users[idx].phone}`);
+        await window.engine.syncToCloud(`Admin reset password for user: ${db.users[idx].phone}`);
         renderConsole();
       }
     }
 
     async function deleteUser(idx) {
       if (confirm("Permanently delete this customer account?")) {
-        const removed = db.users.splice(idx, 1);
-        await window.engine.syncToCloud(`Deleted Customer: ${removed[0]?.phone}`);
+        db.users.splice(idx, 1);
+        await window.engine.syncToCloud("Deleted customer account");
         renderConsole();
       }
     }
