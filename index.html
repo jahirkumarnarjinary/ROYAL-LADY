@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROYAL LADY — Exclusive Women's Fashion & Luxury</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-serif-lux { font-family: 'Playfair Display', serif; }
+    .glass { background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(18px); }
+    .gold-gradient { background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%); }
+    .social-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .social-btn:hover { transform: translateY(-4px) scale(1.1); }
+  </style>
+</head>
+<body class="bg-[#060810] text-slate-100 min-h-screen flex flex-col selection:bg-pink-600 selection:text-white">
+
+  <!-- TOP BANNER -->
+  <div class="bg-gradient-to-r from-pink-700 via-rose-600 to-amber-600 text-white py-2 px-4 text-xs font-bold flex items-center justify-between shadow-md">
+    <div class="flex items-center gap-2">
+      <span class="bg-black/40 text-amber-300 px-2.5 py-0.5 rounded text-[10px] uppercase tracking-wider">LADIES LUXURY</span>
+      <span class="truncate">✨ Genuine Handcrafted Kurtis, Sarees, Lehengas, Jewellery & Innerwear • 100% Secure Payments</span>
+    </div>
+    <div class="flex items-center gap-4 text-[11px] hidden md:flex">
+      <span><i class="fa-solid fa-phone mr-1"></i> Support: <span id="bannerPhone">7384512297</span></span>
+      <a href="admin.html" class="px-2.5 py-1 bg-black/50 hover:bg-black rounded-lg text-[10px] text-amber-300 transition font-bold">
+        <i class="fa-solid fa-shield-halved mr-1"></i> Admin Portal
+      </a>
+    </div>
+  </div>
+
+  <!-- NAVIGATION BAR -->
+  <header class="glass sticky top-0 z-40 border-b border-slate-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('home')">
+      <div class="h-11 w-11 rounded-2xl gold-gradient flex items-center justify-center shadow-lg shadow-pink-500/20">
+        <i class="fa-solid fa-gem text-white text-lg"></i>
+      </div>
+      <div>
+        <h1 class="text-base sm:text-lg font-black tracking-wider text-white font-serif-lux">ROYAL LADY</h1>
+        <p class="text-[10px] text-pink-400 font-bold uppercase tracking-widest">Women's Premium Store</p>
+      </div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="hidden lg:block relative w-96">
+      <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-xs"></i>
+      <input 
+        id="topSearchInput" 
+        type="text" 
+        onkeyup="handleLiveSearch(event)"
+        placeholder="Search Kurtis, Sarees, Lehengas, Innerwear, Jewellery..." 
+        class="w-full bg-slate-950/90 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500 transition"
+      >
+      <div id="searchSuggestionsBox" class="absolute top-11 left-0 w-full bg-slate-900 border border-slate-800 rounded-xl hidden shadow-2xl z-50 overflow-hidden text-xs"></div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <button onclick="navigateTo('wishlist')" class="relative p-2.5 bg-slate-900 border border-slate-800 rounded-xl hover:text-pink-400 text-slate-300 text-xs transition" title="Wishlist">
+        <i class="fa-solid fa-heart"></i>
+        <span id="wishlistCountBadge" class="absolute -top-1 -right-1 bg-pink-600 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+      </button>
+
+      <button onclick="navigateTo('orders')" class="relative p-2.5 bg-slate-900 border border-slate-800 rounded-xl hover:text-amber-400 text-slate-300 text-xs transition" title="My Orders & Tracking">
+        <i class="fa-solid fa-box-open"></i>
+        <span id="ordersCountBadge" class="absolute -top-1 -right-1 bg-amber-500 text-slate-950 text-[9px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+      </button>
+
+      <div id="guestActionGroup">
+        <button onclick="openAuthModal('signin')" class="px-4 py-2 gold-gradient text-white rounded-xl text-xs font-bold shadow-md shadow-pink-500/20">
+          Sign In
+        </button>
+      </div>
+
+      <div id="userActionGroup" class="hidden flex items-center gap-2">
+        <button onclick="navigateTo('profile')" class="px-3.5 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold flex items-center gap-2 text-pink-300">
+          <i class="fa-solid fa-user-circle"></i> <span id="navUserName">My Account</span>
+        </button>
+        <button onclick="userLogout()" class="p-2.5 bg-red-950/60 text-red-400 border border-red-800/80 rounded-xl text-xs font-bold hover:bg-red-600 hover:text-white transition" title="Logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+
+      <a href="admin.html" class="p-2.5 bg-slate-900 border border-slate-800 rounded-xl hover:text-amber-400 text-slate-400 text-xs transition" title="Admin Control Center">
+        <i class="fa-solid fa-user-shield"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-8">
+
+    <!-- VIEW 1: HOME CATALOG -->
+    <div id="view-home" class="space-y-8">
+      
+      <!-- HERO BANNER -->
+      <div class="glass border border-slate-800/80 rounded-3xl p-6 sm:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-3 text-center md:text-left z-10">
+          <span class="text-[11px] font-bold px-3 py-1 rounded-full bg-pink-950 text-pink-400 border border-pink-800/80 uppercase tracking-widest inline-block">
+            Festive Luxury Collection 2026
+          </span>
+          <h2 class="text-3xl sm:text-5xl font-black text-white font-serif-lux leading-tight">
+            Elegance Designed For <span class="bg-gradient-to-r from-pink-400 via-rose-300 to-amber-300 bg-clip-text text-transparent">Every Woman</span>
+          </h2>
+          <p class="text-slate-400 text-xs sm:text-sm max-w-xl">
+            Discover handcrafted Kurtis, Sarees, Lehengas, Kundan Jewellery, Western wear, and comfortable everyday essentials with instant UPI & live location tracking.
+          </p>
+        </div>
+        <div class="flex-shrink-0 z-10">
+          <button onclick="scrollToCatalog()" class="px-7 py-3.5 gold-gradient text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-xl shadow-pink-500/20 active:scale-95 transition">
+            Explore All Collections <i class="fa-solid fa-arrow-down ml-1"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- COD TRANSPARENCY NOTICE -->
+      <div class="p-4 rounded-2xl bg-slate-900/90 border border-amber-500/30 text-xs text-slate-300 flex items-start gap-3">
+        <i class="fa-solid fa-shield-halved text-amber-400 text-lg flex-shrink-0 mt-0.5"></i>
+        <div class="leading-relaxed">
+          <strong class="text-amber-400">Why Cash On Delivery (COD) Is Not Offered on Royal Lady:</strong>
+          <p class="text-slate-400 mt-0.5 text-[11px]">
+            Royal Lady is our personal bespoke women's enterprise. We guarantee 100% authentic, tamper-proof luxury products dispatched directly to you. We do not provide Cash on Delivery because fraudulent deliveries and fake returns cause immense losses where products are withheld and payments returned. Every order made via our Instant QR/UPI payment is fully backed by live delivery monitoring and return replacement protection.
+          </p>
+        </div>
+      </div>
+
+      <!-- ALL WOMEN'S CATEGORIES -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-800" id="categoryNav">
+        <button onclick="selectCategory('ALL')" class="cat-pill active px-4 py-2 rounded-xl text-xs font-bold transition bg-pink-600 text-white flex-shrink-0">All Items</button>
+        <button onclick="selectCategory('Kurtis')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Kurtis</button>
+        <button onclick="selectCategory('Sarees')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Sarees</button>
+        <button onclick="selectCategory('Lehengas')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Lehengas</button>
+        <button onclick="selectCategory('Gowns & Dresses')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Gowns & Dresses</button>
+        <button onclick="selectCategory('Jewellery')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Jewellery</button>
+        <button onclick="selectCategory('Western Tops')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Western Tops</button>
+        <button onclick="selectCategory('Jeans & Pants')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Jeans & Pants</button>
+        <button onclick="selectCategory('T-Shirts & Shirts')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">T-Shirts & Shirts</button>
+        <button onclick="selectCategory('Nightwear')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Nightwear</button>
+        <button onclick="selectCategory('Innerwear')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Innerwear</button>
+        <button onclick="selectCategory('Handbags')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Handbags</button>
+        <button onclick="selectCategory('Shoes & Slippers')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Shoes & Slippers</button>
+        <button onclick="selectCategory('Beauty & Cosmetics')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0">Beauty & Cosmetics</button>
+      </div>
+
+      <!-- CATALOG GRID -->
+      <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    </div>
+
+    <!-- VIEW 2: WISHLIST -->
+    <div id="view-wishlist" class="hidden space-y-6">
+      <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2 font-serif-lux">
+          <i class="fa-solid fa-heart text-pink-500"></i> My Loved Wishlist Items
+        </h3>
+        <button onclick="navigateTo('home')" class="text-xs text-pink-400 hover:underline">← Continue Shopping</button>
+      </div>
+      <div id="wishlistGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    </div>
+
+    <!-- VIEW 3: LIVE ORDERS & SHIPMENT TRACKING -->
+    <div id="view-orders" class="hidden space-y-6">
+      <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2 font-serif-lux">
+          <i class="fa-solid fa-truck-fast text-amber-400"></i> Order History & Live Location Tracking
+        </h3>
+        <button onclick="navigateTo('home')" class="text-xs text-pink-400 hover:underline">← Back to Store</button>
+      </div>
+      <div id="ordersContainer" class="space-y-4"></div>
+    </div>
+
+    <!-- VIEW 4: USER PROFILE -->
+    <div id="view-profile" class="hidden max-w-2xl mx-auto space-y-6">
+      <div class="glass border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6">
+        <div class="flex items-center gap-4 border-b border-slate-800 pb-4">
+          <div class="relative">
+            <img id="profileAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" class="w-16 h-16 rounded-2xl object-cover border-2 border-pink-500 shadow-lg">
+            <label class="absolute -bottom-1 -right-1 bg-pink-600 p-1.5 rounded-full text-white text-[10px] cursor-pointer" title="Upload JPG Profile Picture">
+              <i class="fa-solid fa-camera"></i>
+              <input type="file" accept="image/jpeg,image/jpg" onchange="uploadProfilePic(event)" class="hidden">
+            </label>
+          </div>
+          <div>
+            <h4 id="profileNameDisplay" class="text-base font-bold text-white">Guest User</h4>
+            <p id="profilePhoneDisplay" class="text-xs text-slate-400"></p>
+          </div>
+        </div>
+
+        <form onsubmit="saveUserProfile(event)" class="space-y-4 text-xs">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="text-slate-400 block mb-1">Full Name</label>
+              <input id="profFullName" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Personal UPI ID (For Instant Refunds)</label>
+              <input id="profUpi" type="text" placeholder="username@bank" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+            </div>
+          </div>
+
+          <div class="border-t border-slate-800/80 pt-3">
+            <h5 class="text-amber-400 font-bold mb-2">Saved Delivery Address (Auto-filled during checkout)</h5>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input id="profFlat" type="text" placeholder="House / Flat / Building No." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+              <input id="profVillage" type="text" placeholder="Village / Area / Street Road" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+              <input id="profLandmark" type="text" placeholder="Famous Nearby Landmark (School, Mandir, Shop)" class="sm:col-span-2 w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+              <input id="profPo" type="text" placeholder="Post Office (PO)" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+              <input id="profPs" type="text" placeholder="Police Station (PS)" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+              <input id="profDistrict" type="text" placeholder="District" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+              <input id="profPin" type="text" placeholder="PIN Code" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+              <input id="profAltPhone" type="tel" placeholder="Alternative / Emergency Mobile Number" class="sm:col-span-2 w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-2.5 gold-gradient text-white font-bold rounded-xl shadow-md">
+            Save Profile & Address Details
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- PRODUCT DETAIL / IMAGE SLIDER MODAL -->
+  <div id="productDetailModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto p-6 sm:p-8 relative shadow-2xl space-y-6">
+      <button onclick="closeProductModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <div class="space-y-3">
+          <div class="relative h-80 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800">
+            <img id="carouselMainImg" src="" class="w-full h-full object-cover">
+            <button onclick="slideCarousel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 p-2 rounded-full text-white text-xs hover:bg-black transition"><i class="fa-solid fa-chevron-left"></i></button>
+            <button onclick="slideCarousel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 p-2 rounded-full text-white text-xs hover:bg-black transition"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+          <div id="carouselThumbnails" class="flex gap-2 overflow-x-auto pb-1"></div>
+        </div>
+
+        <div class="space-y-4 text-xs">
+          <span id="modalCatBadge" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-pink-950 text-pink-400 border border-pink-800 uppercase"></span>
+          <h3 id="modalTitle" class="text-xl font-bold text-white font-serif-lux leading-snug"></h3>
+          
+          <div class="flex items-center gap-3">
+            <span id="modalPrice" class="text-2xl font-black text-amber-400"></span>
+            <span id="modalOrigPrice" class="text-sm line-through text-slate-500"></span>
+            <span id="modalDiscount" class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400"></span>
+          </div>
+
+          <p id="modalDesc" class="text-slate-400 text-xs leading-relaxed"></p>
+
+          <!-- CLICKABLE SIZE SELECTION -->
+          <div>
+            <label class="text-slate-300 font-bold block mb-1.5">
+              Select Size / Fit: <span id="selectedSizeLabel" class="text-pink-400 ml-1 font-extrabold"></span>
+            </label>
+            <div id="modalSizePills" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-800 space-y-2">
+            <button onclick="initiateCheckout()" class="w-full py-3 gold-gradient text-white font-extrabold rounded-xl shadow-lg shadow-pink-500/25 active:scale-95 transition">
+              <i class="fa-solid fa-bolt mr-1"></i> Buy Now With Instant QR / UPI
+            </button>
+            <p class="text-[10px] text-center text-slate-500">Safe payments via PhonePe, Google Pay, Paytm & UPI</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT & DYNAMIC QR / UPI PAYMENT MODAL -->
+  <div id="checkoutModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full max-h-[92vh] overflow-y-auto p-6 sm:p-8 relative shadow-2xl text-xs space-y-6">
+      <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="border-b border-slate-800 pb-3">
+        <h4 class="text-base font-bold text-white font-serif-lux">Complete Your Luxury Order</h4>
+        <p class="text-slate-400 text-[11px]">Item: <span id="chkProductSummary" class="text-pink-400 font-bold"></span></p>
+      </div>
+
+      <!-- DETAILED SHIPPING FORM -->
+      <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-amber-400 uppercase text-[10px]">Delivery Destination (Accurate Drop Location)</span>
+          <button type="button" onclick="loadSavedAddressToForm()" class="text-pink-400 hover:underline text-[11px]">Use Saved Profile Address</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <input id="chkName" type="text" placeholder="Recipient Full Name" required class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-white">
+          <input id="chkPhone" type="tel" placeholder="Primary Contact Phone" required class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-white">
+          <input id="chkAltPhone" type="tel" placeholder="Alternate Phone / Delivery Call" class="sm:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-2 text-white">
+          <input id="chkFlat" type="text" placeholder="House / Flat / Building No." required class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-white">
+          <input id="chkVillage" type="text" placeholder="Village / Area / Road" required class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-white">
+          <input id="chkLandmark" type="text" placeholder="Famous Landmark (School, Mandir, Shop)" required class="sm:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-2 text-white">
+          <input id="chkPo" type="text" placeholder="Post Office (PO)" required class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-white">
+          <input id="chkPs" type="text" placeholder="Police Station (PS)" required class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-white">
+          <input id="chkDistrict" type="text" placeholder="District" required class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-white">
+          <input id="chkPin" type="text" placeholder="PIN Code" required class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-white">
+        </div>
+      </div>
+
+      <!-- QR & UPI PAY GATE -->
+      <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 text-center space-y-3">
+        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Payable Amount</span>
+        <h3 id="chkTotalAmount" class="text-2xl font-black text-amber-400">₹0</h3>
+
+        <div class="p-3 bg-white rounded-2xl inline-block shadow-md">
+          <div id="qrcodeCanvas"></div>
+        </div>
+        <p class="text-[10px] text-slate-400">Scan with any UPI App: GPay, PhonePe, Paytm, BHIM</p>
+
+        <div class="flex items-center justify-center gap-2 pt-2 border-t border-slate-800">
+          <span class="text-slate-400 text-[11px]">UPI ID:</span>
+          <span id="chkUpiIdText" class="font-bold text-white bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-800"></span>
+          <button onclick="copyUpiId()" class="text-pink-400 hover:text-white" title="Copy UPI"><i class="fa-regular fa-copy"></i></button>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <button onclick="completePaymentAndOrder()" class="w-full py-3 gold-gradient text-white font-extrabold rounded-xl shadow-lg shadow-pink-500/25 active:scale-95 transition">
+          <i class="fa-solid fa-check-circle mr-1"></i> I Have Paid — Generate Order & Track Live
+        </button>
+        <p class="text-[10px] text-center text-slate-500">Upon confirmation, your tracking portal initializes immediately.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RETURN REQUEST MODAL -->
+  <div id="returnModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 text-xs space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h4 class="font-bold text-white font-serif-lux">Request Product Return</h4>
+        <button onclick="closeReturnModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form onsubmit="submitReturnClaim(event)" class="space-y-3">
+        <div>
+          <label class="text-slate-400 block mb-1">Reason for Return (Mandatory)</label>
+          <textarea id="retReason" rows="3" required placeholder="Describe damage, size issue, or manufacturing problem..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white"></textarea>
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">Upload Photo of Product Defect</label>
+          <input id="retPhotoFile" type="file" accept="image/jpeg,image/png" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-slate-400 text-[11px]">
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl shadow-md">
+          Submit Return Claim to Admin
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- AUTHENTICATION (SIGN IN / SIGN UP) -->
+  <div id="authModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 relative shadow-2xl text-xs space-y-4">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="flex border-b border-slate-800 pb-2">
+        <button id="authBtnTabIn" onclick="switchAuthTab('signin')" class="flex-1 py-1 font-bold text-pink-400 border-b-2 border-pink-400">Sign In</button>
+        <button id="authBtnTabUp" onclick="switchAuthTab('signup')" class="flex-1 py-1 font-bold text-slate-400">Create Account</button>
+      </div>
+
+      <form id="authFormSignIn" onsubmit="handleUserSignIn(event)" class="space-y-3">
+        <div>
+          <label class="text-slate-400 block mb-1">Mobile Phone Number</label>
+          <input id="inUserPhone" type="tel" pattern="[0-9]{10}" placeholder="10-digit mobile number" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">Password</label>
+          <div class="relative">
+            <input id="inUserPass" type="password" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 pr-9 text-white">
+            <button type="button" onclick="togglePass('inUserPass')" class="absolute right-3 top-2.5 text-slate-400"><i class="fa-solid fa-eye"></i></button>
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 gold-gradient text-white font-bold rounded-xl shadow-md">Sign In to Account</button>
+      </form>
+
+      <form id="authFormSignUp" onsubmit="handleUserSignUp(event)" class="hidden space-y-3">
+        <div>
+          <label class="text-slate-400 block mb-1">Your Full Name</label>
+          <input id="upUserName" type="text" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">Mobile Phone Number</label>
+          <input id="upUserPhone" type="tel" pattern="[0-9]{10}" placeholder="10-digit mobile number" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">Create Password</label>
+          <div class="relative">
+            <input id="upUserPass" type="password" minlength="6" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 pr-9 text-white">
+            <button type="button" onclick="togglePass('upUserPass')" class="absolute right-3 top-2.5 text-slate-400"><i class="fa-solid fa-eye"></i></button>
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 gold-gradient text-white font-bold rounded-xl shadow-md">Complete Registration</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="glass border-t border-slate-800 mt-16 text-xs text-slate-400 py-12 px-4 sm:px-8 space-y-10">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
+      
+      <!-- Col 1: Brand Info -->
+      <div class="space-y-3">
+        <h3 class="text-base font-bold text-white font-serif-lux">ROYAL LADY</h3>
+        <p class="text-slate-400 text-[11px] leading-relaxed">
+          Premium women's fashion store dedicated to uncompromising quality, hand-picked bridal apparel, jewellery sets, and authentic designer collections.
+        </p>
+        
+        <div class="pt-2">
+          <span class="text-[10px] uppercase font-bold text-slate-400 block mb-2">Connect With Us:</span>
+          <div class="flex items-center gap-3">
+            <a id="socInsta" href="#" target="_blank" class="social-btn w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-rose-500/20">
+              <i class="fa-brands fa-instagram text-sm"></i>
+            </a>
+            <a id="socFb" href="#" target="_blank" class="social-btn w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+              <i class="fa-brands fa-facebook-f text-sm"></i>
+            </a>
+            <a id="socWa" href="#" target="_blank" class="social-btn w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+              <i class="fa-brands fa-whatsapp text-sm"></i>
+            </a>
+            <a id="socYt" href="#" target="_blank" class="social-btn w-9 h-9 rounded-xl bg-red-600 flex items-center justify-center text-white shadow-lg shadow-red-600/20">
+              <i class="fa-brands fa-youtube text-sm"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Col 2: Store Headquarters -->
+      <div>
+        <h4 class="font-bold text-white mb-2">Store Headquarters & Contact</h4>
+        <p><i class="fa-solid fa-location-dot text-pink-500 mr-1.5"></i> <span id="ftAddress">Najiran Deutikhata, PO: Baruipara, PS: Tufanganj, Dist: Cooch Behar, PIN: 736207</span></p>
+        <p class="mt-1.5"><i class="fa-solid fa-phone text-amber-500 mr-1.5"></i> <span id="ftPhone">7384512297</span></p>
+        <p class="mt-1.5"><i class="fa-solid fa-envelope text-cyan-500 mr-1.5"></i> <span id="ftEmail">nikashnarjinary75@gmail.com</span></p>
+      </div>
+
+      <!-- Col 3: STORE OWNER CARD -->
+      <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+        <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-certificate"></i> Store Founder & Owner
+        </span>
+        <div class="flex items-center gap-3">
+          <img id="ownerPhoto" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80" class="w-12 h-12 rounded-xl object-cover border border-amber-400 shadow-md">
+          <div>
+            <h5 id="ownerName" class="font-bold text-white text-xs">Jahir Narjinary</h5>
+            <p id="ownerTitle" class="text-[10px] text-pink-400">Founder & Managing Director</p>
+          </div>
+        </div>
+        <p id="ownerBio" class="text-[11px] text-slate-400 leading-relaxed italic">
+          "Dedicated to bringing authentic luxury, handcrafted bridal elegance, and verified premium lifestyle apparel to every woman with transparency and speed."
+        </p>
+      </div>
+
+      <!-- Col 4: Trust & Admin Link -->
+      <div class="space-y-3">
+        <h4 class="font-bold text-white mb-1">Security & Administration</h4>
+        <p class="text-[11px] text-slate-400 leading-relaxed">
+          100% Encrypted UPI Payments via NPCI network. Orders tracked live with delivery executive phone contact.
+        </p>
+        <div class="pt-2">
+          <a href="admin.html" class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-amber-400 text-xs font-bold transition">
+            <i class="fa-solid fa-shield-halved"></i> Open Admin Portal
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="text-center text-[11px] text-slate-600 pt-6 border-t border-slate-900">
+      © 2026 ROYAL LADY STORE. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script src="store.js"></script>
+  <script>
+    let db = null;
+    let currentUser = JSON.parse(sessionStorage.getItem("RL_USER")) || null;
+    let wishlist = JSON.parse(localStorage.getItem("RL_WISHLIST")) || [];
+    let activeCategory = "ALL";
+    let activeModalProduct = null;
+    let activeCarouselIndex = 0;
+    let selectedSize = "";
+    let activeReturnOrderId = null;
+
+    async function initStore() {
+      db = await window.engine.load();
+      if (!db) return;
+
+      const c = db.adminConfig || {};
+      document.getElementById("bannerPhone").textContent = c.storePhone;
+      document.getElementById("ftPhone").textContent = c.storePhone;
+      document.getElementById("ftEmail").textContent = c.storeEmail;
+      document.getElementById("ftAddress").textContent = c.storeAddress;
+
+      if (c.socialLinks) {
+        document.getElementById("socInsta").href = c.socialLinks.instagram || "#";
+        document.getElementById("socFb").href = c.socialLinks.facebook || "#";
+        document.getElementById("socWa").href = c.socialLinks.whatsapp || "#";
+        document.getElementById("socYt").href = c.socialLinks.youtube || "#";
+      }
+
+      if (c.owner) {
+        document.getElementById("ownerName").textContent = c.owner.name || "Jahir Narjinary";
+        document.getElementById("ownerTitle").textContent = c.owner.title || "Store Founder";
+        document.getElementById("ownerBio").textContent = `"${c.owner.bio || ''}"`;
+        if (c.owner.photo) document.getElementById("ownerPhoto").src = c.owner.photo;
+      }
+
+      updateUserUI();
+      renderCatalog();
+      updateWishlistBadge();
+      updateOrdersBadge();
+    }
+
+    function navigateTo(viewId) {
+      ['home', 'wishlist', 'orders', 'profile'].forEach(v => {
+        document.getElementById(`view-${v}`).classList.add('hidden');
+      });
+      document.getElementById(`view-${viewId}`).classList.remove('hidden');
+
+      if (viewId === 'wishlist') renderWishlistView();
+      if (viewId === 'orders') renderOrdersView();
+      if (viewId === 'profile') renderProfileView();
+    }
+
+    function scrollToCatalog() {
+      document.getElementById("categoryNav").scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function selectCategory(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        if (btn.textContent.trim() === cat || (cat === 'ALL' && btn.textContent.includes('All'))) {
+          btn.className = "cat-pill active px-4 py-2 rounded-xl text-xs font-bold transition bg-pink-600 text-white flex-shrink-0";
+        } else {
+          btn.className = "cat-pill px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 hover:text-white flex-shrink-0";
+        }
+      });
+      renderCatalog();
+    }
+
+    function renderCatalog() {
+      const grid = document.getElementById("catalogGrid");
+      grid.innerHTML = "";
+
+      const prods = (db.products || []).filter(p => activeCategory === 'ALL' || p.category === activeCategory);
+      if (prods.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 text-xs">No products in this category yet.</div>`;
+        return;
+      }
+
+      prods.forEach(p => {
+        const isLoved = wishlist.includes(p.id);
+        const card = document.createElement("div");
+        card.className = "glass border border-slate-800 rounded-3xl overflow-hidden hover:border-pink-500/50 transition group flex flex-col justify-between";
+
+        card.innerHTML = `
+          <div>
+            <div class="relative h-64 overflow-hidden bg-slate-950">
+              <img src="${p.images[0]}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <button onclick="toggleWishlist('${p.id}')" class="absolute top-3 right-3 h-8 w-8 rounded-full bg-black/60 flex items-center justify-center ${isLoved ? 'text-pink-500' : 'text-white'} hover:text-pink-400 transition">
+                <i class="fa-solid fa-heart text-xs"></i>
+              </button>
+              <span class="absolute bottom-3 left-3 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-black/70 text-pink-300">
+                ${p.category}
+              </span>
+            </div>
+            <div class="p-4 space-y-1.5">
+              <h4 class="text-xs font-bold text-white truncate">${p.title}</h4>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-black text-amber-400">₹${p.price}</span>
+                <span class="text-[11px] line-through text-slate-500">₹${p.originalPrice}</span>
+                <span class="text-[9px] font-bold text-emerald-400 ml-auto">${p.discount}</span>
+              </div>
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <button onclick="openProductModal('${p.id}')" class="w-full py-2 bg-slate-900 hover:bg-pink-600 text-white rounded-xl text-xs font-bold transition">
+              View & Order
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function handleLiveSearch(e) {
+      const q = e.target.value.toLowerCase().trim();
+      const box = document.getElementById("searchSuggestionsBox");
+
+      if (q.length === 0) {
+        box.classList.add("hidden");
+        return;
+      }
+
+      const matches = (db.products || []).filter(p => 
+        p.title.toLowerCase().includes(q) || 
+        p.category.toLowerCase().includes(q) || 
+        p.description.toLowerCase().includes(q)
+      );
+
+      box.innerHTML = "";
+      if (matches.length === 0) {
+        box.innerHTML = `<p class="p-3 text-slate-500">No matching women's products found.</p>`;
+      } else {
+        matches.slice(0, 5).forEach(m => {
+          const row = document.createElement("div");
+          row.className = "flex items-center gap-3 p-2.5 hover:bg-slate-800 cursor-pointer border-b border-slate-800/50";
+          row.onclick = () => {
+            box.classList.add("hidden");
+            openProductModal(m.id);
+          };
+          row.innerHTML = `
+            <img src="${m.images[0]}" class="w-8 h-8 rounded-lg object-cover">
+            <div class="truncate">
+              <p class="font-bold text-white truncate">${m.title}</p>
+              <p class="text-[10px] text-amber-400">₹${m.price} • ${m.category}</p>
+            </div>
+          `;
+          box.appendChild(row);
+        });
+      }
+      box.classList.remove("hidden");
+    }
+
+    function openProductModal(id) {
+      activeModalProduct = (db.products || []).find(p => p.id === id);
+      if (!activeModalProduct) return;
+
+      activeCarouselIndex = 0;
+      selectedSize = activeModalProduct.sizes[0] || "Free Size";
+
+      document.getElementById("modalCatBadge").textContent = activeModalProduct.category;
+      document.getElementById("modalTitle").textContent = activeModalProduct.title;
+      document.getElementById("modalPrice").textContent = `₹${activeModalProduct.price}`;
+      document.getElementById("modalOrigPrice").textContent = `₹${activeModalProduct.originalPrice}`;
+      document.getElementById("modalDiscount").textContent = activeModalProduct.discount;
+      document.getElementById("modalDesc").textContent = activeModalProduct.description;
+
+      updateCarouselImage();
+      renderSizePills();
+
+      document.getElementById("productDetailModal").classList.remove("hidden");
+    }
+
+    function renderSizePills() {
+      const sizeBox = document.getElementById("modalSizePills");
+      sizeBox.innerHTML = "";
+      document.getElementById("selectedSizeLabel").textContent = selectedSize;
+
+      activeModalProduct.sizes.forEach(s => {
+        const btn = document.createElement("button");
+        const isSelected = s === selectedSize;
+        btn.type = "button";
+        btn.className = `px-3.5 py-1.5 rounded-xl border text-xs font-bold transition shadow-sm ${
+          isSelected 
+            ? 'bg-pink-600 border-pink-400 text-white scale-105 ring-2 ring-pink-400/50' 
+            : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-pink-500'
+        }`;
+        btn.textContent = s;
+        btn.onclick = () => {
+          selectedSize = s;
+          renderSizePills();
+        };
+        sizeBox.appendChild(btn);
+      });
+    }
+
+    function closeProductModal() {
+      document.getElementById("productDetailModal").classList.add("hidden");
+    }
+
+    function updateCarouselImage() {
+      const imgs = activeModalProduct.images;
+      document.getElementById("carouselMainImg").src = imgs[activeCarouselIndex];
+
+      const thumbs = document.getElementById("carouselThumbnails");
+      thumbs.innerHTML = "";
+      imgs.forEach((img, idx) => {
+        const thumb = document.createElement("img");
+        thumb.src = img;
+        thumb.className = `w-14 h-14 rounded-xl object-cover cursor-pointer border-2 transition ${idx === activeCarouselIndex ? 'border-pink-500 scale-105' : 'border-slate-800 opacity-60'}`;
+        thumb.onclick = () => {
+          activeCarouselIndex = idx;
+          updateCarouselImage();
+        };
+        thumbs.appendChild(thumb);
+      });
+    }
+
+    function slideCarousel(dir) {
+      const total = activeModalProduct.images.length;
+      activeCarouselIndex = (activeCarouselIndex + dir + total) % total;
+      updateCarouselImage();
+    }
+
+    function initiateCheckout() {
+      if (!currentUser) {
+        alert("Please sign in or create an account with your phone number to proceed.");
+        closeProductModal();
+        openAuthModal('signin');
+        return;
+      }
+
+      closeProductModal();
+      document.getElementById("chkTotalAmount").textContent = `₹${activeModalProduct.price}`;
+      document.getElementById("chkUpiIdText").textContent = db.adminConfig.upiId;
+      document.getElementById("chkProductSummary").textContent = `${activeModalProduct.title} (Selected Size: ${selectedSize})`;
+
+      loadSavedAddressToForm();
+
+      const upiUrl = `upi://pay?pa=${db.adminConfig.upiId}&pn=${encodeURIComponent(db.adminConfig.upiName)}&am=${activeModalProduct.price}&cu=INR&tn=Order_${Date.now()}`;
+      const qrBox = document.getElementById("qrcodeCanvas");
+      qrBox.innerHTML = "";
+      new QRCode(qrBox, {
+        text: upiUrl,
+        width: 160,
+        height: 160,
+        colorDark: "#000000",
+        colorLight: "#ffffff"
+      });
+
+      document.getElementById("checkoutModal").classList.remove("hidden");
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById("checkoutModal").classList.add("hidden");
+    }
+
+    function copyUpiId() {
+      navigator.clipboard.writeText(db.adminConfig.upiId);
+      alert("UPI ID Copied to clipboard!");
+    }
+
+    function loadSavedAddressToForm() {
+      if (!currentUser) return;
+      document.getElementById("chkName").value = currentUser.name || "";
+      document.getElementById("chkPhone").value = currentUser.phone || "";
+      document.getElementById("chkAltPhone").value = currentUser.address?.altPhone || "";
+      document.getElementById("chkFlat").value = currentUser.address?.flat || "";
+      document.getElementById("chkVillage").value = currentUser.address?.village || "";
+      document.getElementById("chkLandmark").value = currentUser.address?.landmark || "";
+      document.getElementById("chkPo").value = currentUser.address?.po || "";
+      document.getElementById("chkPs").value = currentUser.address?.ps || "";
+      document.getElementById("chkDistrict").value = currentUser.address?.district || "";
+      document.getElementById("chkPin").value = currentUser.address?.pin || "";
+    }
+
+    async function completePaymentAndOrder() {
+      const name = document.getElementById("chkName").value.trim();
+      const phone = document.getElementById("chkPhone").value.trim();
+      const altPhone = document.getElementById("chkAltPhone").value.trim();
+      const flat = document.getElementById("chkFlat").value.trim();
+      const village = document.getElementById("chkVillage").value.trim();
+      const landmark = document.getElementById("chkLandmark").value.trim();
+      const po = document.getElementById("chkPo").value.trim();
+      const ps = document.getElementById("chkPs").value.trim();
+      const district = document.getElementById("chkDistrict").value.trim();
+      const pin = document.getElementById("chkPin").value.trim();
+
+      if (!name || !phone || !village || !district || !pin) {
+        alert("Please fill in complete delivery address details.");
+        return;
+      }
+
+      const newOrder = {
+        id: "ORD_" + Date.now().toString().slice(-6),
+        userId: currentUser.phone,
+        productId: activeModalProduct.id,
+        productTitle: activeModalProduct.title,
+        productImage: activeModalProduct.images[0],
+        size: selectedSize,
+        price: activeModalProduct.price,
+        recipient: { name, phone, altPhone, flat, village, landmark, po, ps, district, pin },
+        orderDate: new Date().toLocaleDateString(),
+        status: "Pending Admin Approval",
+        trackingLocation: "Central Dispatch Hub, Cooch Behar",
+        deliverySchedule: "In Transit",
+        deliveryBoyPhone: "",
+        returnEligibleUntil: new Date(Date.now() + 7 * 24 * 3600 * 1000).toLocaleDateString(),
+        returnRequest: null
+      };
+
+      if (!db.orders) db.orders = [];
+      db.orders.unshift(newOrder);
+
+      currentUser.address = { name, phone, altPhone, flat, village, landmark, po, ps, district, pin };
+      const uIdx = db.users.findIndex(u => u.phone === currentUser.phone);
+      if (uIdx !== -1) db.users[uIdx] = currentUser;
+
+      window.engine.saveLocal();
+      closeCheckoutModal();
+      alert("Payment Verified! Your order has been placed successfully. Redirecting to live tracking...");
+      navigateTo('orders');
+    }
+
+    function renderOrdersView() {
+      const container = document.getElementById("ordersContainer");
+      container.innerHTML = "";
+
+      if (!currentUser) {
+        container.innerHTML = `<p class="text-xs text-slate-500 py-6">Please sign in to view your orders.</p>`;
+        return;
+      }
+
+      const myOrders = (db.orders || []).filter(o => o.userId === currentUser.phone);
+      if (myOrders.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 py-6">You have not placed any orders yet.</p>`;
+        return;
+      }
+
+      myOrders.forEach(o => {
+        const isDeliveryTodayOrTomorrow = o.deliverySchedule.toLowerCase().includes("today") || o.deliverySchedule.toLowerCase().includes("tomorrow");
+
+        const div = document.createElement("div");
+        div.className = "glass border border-slate-800 rounded-3xl p-5 sm:p-6 space-y-4";
+        div.innerHTML = `
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Order ID: #${o.id}</span>
+              <h4 class="text-sm font-bold text-white mt-0.5">${o.productTitle} (Size: <span class="text-pink-400">${o.size}</span>)</h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-black text-amber-400">₹${o.price}</span>
+              <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-pink-400">${o.status}</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-location-crosshairs text-pink-500"></i> Current Hub:
+                <strong class="text-white">${o.trackingLocation}</strong>
+              </span>
+              <span class="font-extrabold ${isDeliveryTodayOrTomorrow ? 'text-emerald-400 animate-pulse' : 'text-cyan-400'}">
+                <i class="fa-solid fa-truck-fast mr-1"></i> ${o.deliverySchedule}
+              </span>
+            </div>
+            ${o.deliveryBoyPhone ? `
+              <p class="text-slate-400 text-[11px] pt-1 border-t border-slate-900">
+                Delivery Executive Contact: <a href="tel:${o.deliveryBoyPhone}" class="text-emerald-400 font-bold hover:underline"><i class="fa-solid fa-phone text-[10px] ml-1"></i> ${o.deliveryBoyPhone}</a>
+              </p>
+            ` : ''}
+          </div>
+
+          <div class="flex items-center justify-between text-xs pt-1">
+            <span class="text-[10px] text-slate-500">Return Window: Eligible till ${o.returnEligibleUntil}</span>
+            ${o.returnRequest ? `
+              <span class="text-amber-400 font-bold text-[11px]"><i class="fa-solid fa-rotate-left mr-1"></i> Return Claim: ${o.returnRequest.status}</span>
+            ` : `
+              <button onclick="openReturnModal('${o.id}')" class="px-3 py-1.5 bg-slate-900 hover:bg-rose-950 border border-slate-800 text-slate-300 rounded-xl text-[11px] font-bold transition">
+                Request Return
+              </button>
+            `}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function openReturnModal(orderId) {
+      activeReturnOrderId = orderId;
+      document.getElementById("returnModal").classList.remove("hidden");
+    }
+
+    function closeReturnModal() {
+      document.getElementById("returnModal").classList.add("hidden");
+    }
+
+    async function submitReturnClaim(e) {
+      e.preventDefault();
+      const reason = document.getElementById("retReason").value.trim();
+      const file = document.getElementById("retPhotoFile").files[0];
+
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const order = (db.orders || []).find(o => o.id === activeReturnOrderId);
+        if (order) {
+          order.returnRequest = {
+            reason,
+            photo: evt.target.result,
+            status: "Pending Admin Inspection",
+            date: new Date().toLocaleDateString()
+          };
+          window.engine.saveLocal();
+          alert("Return Claim Submitted! Our team will inspect the photo & reason.");
+          closeReturnModal();
+          renderOrdersView();
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function toggleWishlist(id) {
+      const idx = wishlist.indexOf(id);
+      if (idx !== -1) {
+        wishlist.splice(idx, 1);
+      } else {
+        wishlist.push(id);
+      }
+      localStorage.setItem("RL_WISHLIST", JSON.stringify(wishlist));
+      updateWishlistBadge();
+      renderCatalog();
+    }
+
+    function updateWishlistBadge() {
+      document.getElementById("wishlistCountBadge").textContent = wishlist.length;
+    }
+
+    function updateOrdersBadge() {
+      const count = currentUser ? (db.orders || []).filter(o => o.userId === currentUser.phone).length : 0;
+      document.getElementById("ordersCountBadge").textContent = count;
+    }
+
+    function renderWishlistView() {
+      const grid = document.getElementById("wishlistGrid");
+      grid.innerHTML = "";
+
+      const prods = (db.products || []).filter(p => wishlist.includes(p.id));
+      if (prods.length === 0) {
+        grid.innerHTML = `<p class="col-span-full text-xs text-slate-500 py-8">Your Wishlist is currently empty.</p>`;
+        return;
+      }
+
+      prods.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "glass border border-slate-800 rounded-3xl overflow-hidden p-4 space-y-3 flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <img src="${p.images[0]}" class="w-full h-48 object-cover rounded-2xl">
+            <h4 class="text-xs font-bold text-white mt-2 truncate">${p.title}</h4>
+            <p class="text-sm font-black text-amber-400">₹${p.price}</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="openProductModal('${p.id}')" class="flex-1 py-1.5 bg-pink-600 text-white rounded-xl text-xs font-bold">Buy</button>
+            <button onclick="toggleWishlist('${p.id}'); renderWishlistView();" class="p-1.5 bg-slate-900 border border-slate-800 text-slate-400 hover:text-rose-400 rounded-xl text-xs"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderProfileView() {
+      if (!currentUser) return;
+      document.getElementById("profileNameDisplay").textContent = currentUser.name;
+      document.getElementById("profilePhoneDisplay").textContent = `Phone: +91 ${currentUser.phone}`;
+      document.getElementById("profFullName").value = currentUser.name || "";
+      document.getElementById("profUpi").value = currentUser.upi || "";
+
+      if (currentUser.avatar) {
+        document.getElementById("profileAvatar").src = currentUser.avatar;
+      }
+      if (currentUser.address) {
+        document.getElementById("profFlat").value = currentUser.address.flat || "";
+        document.getElementById("profVillage").value = currentUser.address.village || "";
+        document.getElementById("profLandmark").value = currentUser.address.landmark || "";
+        document.getElementById("profPo").value = currentUser.address.po || "";
+        document.getElementById("profPs").value = currentUser.address.ps || "";
+        document.getElementById("profDistrict").value = currentUser.address.district || "";
+        document.getElementById("profPin").value = currentUser.address.pin || "";
+        document.getElementById("profAltPhone").value = currentUser.address.altPhone || "";
+      }
+    }
+
+    function uploadProfilePic(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        currentUser.avatar = evt.target.result;
+        document.getElementById("profileAvatar").src = evt.target.result;
+        syncUserSession();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveUserProfile(e) {
+      e.preventDefault();
+      currentUser.name = document.getElementById("profFullName").value.trim();
+      currentUser.upi = document.getElementById("profUpi").value.trim();
+      currentUser.address = {
+        flat: document.getElementById("profFlat").value.trim(),
+        village: document.getElementById("profVillage").value.trim(),
+        landmark: document.getElementById("profLandmark").value.trim(),
+        po: document.getElementById("profPo").value.trim(),
+        ps: document.getElementById("profPs").value.trim(),
+        district: document.getElementById("profDistrict").value.trim(),
+        pin: document.getElementById("profPin").value.trim(),
+        altPhone: document.getElementById("profAltPhone").value.trim()
+      };
+      syncUserSession();
+      alert("Profile and address preferences saved successfully!");
+    }
+
+    function syncUserSession() {
+      sessionStorage.setItem("RL_USER", JSON.stringify(currentUser));
+      const idx = db.users.findIndex(u => u.phone === currentUser.phone);
+      if (idx !== -1) {
+        db.users[idx] = currentUser;
+      }
+      window.engine.saveLocal();
+      updateUserUI();
+    }
+
+    function openAuthModal(tab) {
+      document.getElementById("authModal").classList.remove("hidden");
+      switchAuthTab(tab);
+    }
+
+    function closeAuthModal() {
+      document.getElementById("authModal").classList.add("hidden");
+    }
+
+    function switchAuthTab(tab) {
+      if (tab === 'signin') {
+        document.getElementById("authFormSignIn").classList.remove("hidden");
+        document.getElementById("authFormSignUp").classList.add("hidden");
+        document.getElementById("authBtnTabIn").className = "flex-1 py-1 font-bold text-pink-400 border-b-2 border-pink-400";
+        document.getElementById("authBtnTabUp").className = "flex-1 py-1 font-bold text-slate-400";
+      } else {
+        document.getElementById("authFormSignIn").classList.add("hidden");
+        document.getElementById("authFormSignUp").classList.remove("hidden");
+        document.getElementById("authBtnTabUp").className = "flex-1 py-1 font-bold text-pink-400 border-b-2 border-pink-400";
+        document.getElementById("authBtnTabIn").className = "flex-1 py-1 font-bold text-slate-400";
+      }
+    }
+
+    function togglePass(id) {
+      const f = document.getElementById(id);
+      f.type = f.type === 'password' ? 'text' : 'password';
+    }
+
+    function handleUserSignUp(e) {
+      e.preventDefault();
+      const name = document.getElementById("upUserName").value.trim();
+      const phone = document.getElementById("upUserPhone").value.trim();
+      const pass = document.getElementById("upUserPass").value;
+
+      if (!db.users) db.users = [];
+
+      if (db.users.some(u => u.phone === phone)) {
+        alert("Mobile number already registered. Please sign in.");
+        return;
+      }
+
+      const user = {
+        name,
+        phone,
+        password: pass,
+        isBanned: false,
+        avatar: "",
+        upi: "",
+        address: { flat: "", village: "", landmark: "", po: "", ps: "", district: "", pin: "", altPhone: "" },
+        joinedAt: new Date().toLocaleDateString()
+      };
+
+      db.users.push(user);
+      window.engine.saveLocal();
+
+      currentUser = user;
+      sessionStorage.setItem("RL_USER", JSON.stringify(user));
+      closeAuthModal();
+      updateUserUI();
+      alert(`Welcome ${name}! Your account has been created successfully.`);
+    }
+
+    function handleUserSignIn(e) {
+      e.preventDefault();
+      const phone = document.getElementById("inUserPhone").value.trim();
+      const pass = document.getElementById("inUserPass").value;
+
+      if (!db.users) db.users = [];
+
+      const user = db.users.find(u => u.phone === phone && u.password === pass);
+      if (!user) {
+        alert("Invalid phone number or password.");
+        return;
+      }
+      if (user.isBanned) {
+        alert("Your account has been restricted by store administration.");
+        return;
+      }
+
+      currentUser = user;
+      sessionStorage.setItem("RL_USER", JSON.stringify(user));
+      closeAuthModal();
+      updateUserUI();
+      alert(`Welcome back, ${user.name}!`);
+    }
+
+    function userLogout() {
+      sessionStorage.removeItem("RL_USER");
+      currentUser = null;
+      updateUserUI();
+      navigateTo('home');
+    }
+
+    function updateUserUI() {
+      if (currentUser) {
+        document.getElementById("guestActionGroup").classList.add("hidden");
+        document.getElementById("userActionGroup").classList.remove("hidden");
+        document.getElementById("navUserName").textContent = currentUser.name.split(" ")[0];
+      } else {
+        document.getElementById("guestActionGroup").classList.remove("hidden");
+        document.getElementById("userActionGroup").classList.add("hidden");
+      }
+      updateOrdersBadge();
+    }
+
+    initStore();
+  </script>
+</body>
+</html>

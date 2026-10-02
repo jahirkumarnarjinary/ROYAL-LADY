@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Master Admin Control — ROYAL LADY</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass { background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(20px); }
+    .gold-gradient { background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%); }
+    .nav-tab.active { background: #ec4899; color: white; border-color: #f472b6; }
+  </style>
+</head>
+<body class="bg-[#05070e] text-slate-100 min-h-screen p-3 sm:p-6 selection:bg-pink-600 selection:text-white">
+
+  <!-- ENCRYPTED AUTHENTICATION GATE (TRIPLE SECURITY: ID + PASSWORD + GITHUB TOKEN) -->
+  <div id="adminAuthScreen" class="max-w-md mx-auto mt-16 glass border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl text-xs space-y-4">
+    <div class="text-center mb-6">
+      <div class="h-12 w-12 rounded-2xl gold-gradient flex items-center justify-center mx-auto mb-3 shadow-lg shadow-pink-500/20">
+        <i class="fa-solid fa-shield-halved text-white text-lg"></i>
+      </div>
+      <h2 class="text-lg font-bold text-white uppercase tracking-wider">Royal Lady Security Gate</h2>
+      <p class="text-slate-400 text-[11px]">Triple-Locked Cryptographic Authorization</p>
+    </div>
+
+    <form onsubmit="handleSecureLogin(event)" class="space-y-3">
+      <div>
+        <label class="text-slate-300 font-semibold block mb-1">Admin User ID</label>
+        <input id="inAdminId" type="email" placeholder="Enter User ID" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-pink-500">
+      </div>
+      
+      <div>
+        <label class="text-slate-300 font-semibold block mb-1">Admin Password</label>
+        <div class="relative">
+          <input id="inAdminPass" type="password" placeholder="Enter Password" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 pr-9 text-white focus:outline-none focus:border-pink-500">
+          <button type="button" onclick="togglePass('inAdminPass', 'eyeAdminIcon')" class="absolute right-3 top-2.5 text-slate-400">
+            <i id="eyeAdminIcon" class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-slate-300 font-semibold block mb-1">GitHub Personal Access Token (Write Scope - ghp_...)</label>
+        <div class="relative">
+          <input id="inAdminToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 pr-9 text-white focus:outline-none focus:border-pink-500">
+          <button type="button" onclick="togglePass('inAdminToken', 'eyeTokenIcon')" class="absolute right-3 top-2.5 text-slate-400">
+            <i id="eyeTokenIcon" class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" id="btnAdminLogin" class="w-full py-2.5 gold-gradient text-white font-bold rounded-xl shadow-md active:scale-95 transition">
+        Authorize & Unlock Dashboard
+      </button>
+      <p id="authErrorMsg" class="text-red-400 text-center font-semibold hidden"></p>
+    </form>
+    <div class="text-center pt-2">
+      <a href="index.html" class="text-slate-400 hover:text-white">← Open Client Store</a>
+    </div>
+  </div>
+
+  <!-- ADMIN COMMAND CONSOLE -->
+  <div id="adminConsoleScreen" class="max-w-6xl mx-auto hidden space-y-6">
+    <header class="glass border border-slate-800 p-4 sm:p-5 rounded-2xl flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <span class="h-3 w-3 rounded-full bg-emerald-400 animate-pulse"></span>
+        <h1 class="text-sm sm:text-base font-bold text-white uppercase tracking-wider">ROYAL LADY CONTROL CONSOLE</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="index.html" target="_blank" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl">
+          <i class="fa-solid fa-store mr-1"></i> View Live Store
+        </a>
+        <button onclick="logoutAdmin()" class="px-3.5 py-1.5 bg-red-600/20 text-red-400 border border-red-500/30 text-xs font-bold rounded-xl hover:bg-red-600 hover:text-white transition">
+          Sign Out
+        </button>
+      </div>
+    </header>
+
+    <!-- SECTION SWITCHER TABS -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-800 text-xs">
+      <button onclick="switchAdminTab('products')" id="tabBtn-products" class="nav-tab active px-4 py-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 font-bold transition flex items-center gap-1.5 flex-shrink-0">
+        <i class="fa-solid fa-box-open"></i> Products & Stock
+      </button>
+      <button onclick="switchAdminTab('orders')" id="tabBtn-orders" class="nav-tab px-4 py-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 font-bold transition flex items-center gap-1.5 flex-shrink-0">
+        <i class="fa-solid fa-truck-fast"></i> Orders & Tracking
+      </button>
+      <button onclick="switchAdminTab('returns')" id="tabBtn-returns" class="nav-tab px-4 py-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 font-bold transition flex items-center gap-1.5 flex-shrink-0">
+        <i class="fa-solid fa-rotate-left"></i> Return Claims
+      </button>
+      <button onclick="switchAdminTab('users')" id="tabBtn-users" class="nav-tab px-4 py-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 font-bold transition flex items-center gap-1.5 flex-shrink-0">
+        <i class="fa-solid fa-users"></i> Customers
+      </button>
+      <button onclick="switchAdminTab('aboutStore')" id="tabBtn-aboutStore" class="nav-tab px-4 py-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 font-bold transition flex items-center gap-1.5 flex-shrink-0">
+        <i class="fa-solid fa-id-card-clip"></i> About Store & Owner
+      </button>
+      <button onclick="switchAdminTab('security')" id="tabBtn-security" class="nav-tab px-4 py-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 font-bold transition flex items-center gap-1.5 flex-shrink-0">
+        <i class="fa-solid fa-key"></i> Payment & Security
+      </button>
+    </div>
+
+    <!-- TAB 1: PRODUCT CATALOG MANAGER (UP TO 5 PHOTOS & AUTO COMPRESS) -->
+    <div id="sec-products" class="glass border border-slate-800 p-5 rounded-2xl space-y-4">
+      <h2 class="text-xs font-bold text-pink-400 uppercase tracking-wider flex items-center gap-2">
+        <i class="fa-solid fa-square-plus"></i> Upload New Product (Up to 5 Photos)
+      </h2>
+      <form onsubmit="submitNewProduct(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+        <input id="pTitle" type="text" placeholder="Product Title" required class="sm:col-span-2 bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        
+        <select id="pCategory" required class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200">
+          <option value="Kurtis">Kurtis</option>
+          <option value="Sarees">Sarees</option>
+          <option value="Lehengas">Lehengas</option>
+          <option value="Gowns & Dresses">Gowns & Dresses</option>
+          <option value="Jewellery">Jewellery</option>
+          <option value="Western Tops">Western Tops</option>
+          <option value="Jeans & Pants">Jeans & Pants</option>
+          <option value="T-Shirts & Shirts">T-Shirts & Shirts</option>
+          <option value="Nightwear">Nightwear</option>
+          <option value="Innerwear">Innerwear</option>
+          <option value="Handbags">Handbags</option>
+          <option value="Shoes & Slippers">Shoes & Slippers</option>
+          <option value="Beauty & Cosmetics">Beauty & Cosmetics</option>
+        </select>
+
+        <input id="pPrice" type="number" placeholder="Discounted Selling Price (₹)" required class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        <input id="pOrigPrice" type="number" placeholder="Original MRP Price (₹)" required class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        
+        <div class="sm:col-span-3">
+          <label class="text-slate-400 block mb-1">Available Sizes (Comma separated, e.g. S, M, L, XL or Free Size)</label>
+          <input id="pSizes" type="text" placeholder="S, M, L, XL, XXL, Free Size" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+        
+        <!-- 5 PHOTO SLOTS -->
+        <div class="sm:col-span-3 bg-slate-950/70 p-4 rounded-2xl border border-slate-800/80 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label class="text-amber-400 font-bold block">Upload Product Photos (Photo 1 Mandatory, 2 to 5 Optional)</label>
+            <span class="text-[10px] text-slate-500">Auto-compressed for instant speed</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-[11px]">
+            <div>
+              <span class="text-slate-400 block mb-1">Photo 1 (Main)*</span>
+              <input id="pImg1" type="file" accept="image/*" required class="w-full bg-slate-900 border border-slate-800 rounded-lg p-1.5 text-slate-400">
+            </div>
+            <div>
+              <span class="text-slate-400 block mb-1">Photo 2</span>
+              <input id="pImg2" type="file" accept="image/*" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-1.5 text-slate-400">
+            </div>
+            <div>
+              <span class="text-slate-400 block mb-1">Photo 3</span>
+              <input id="pImg3" type="file" accept="image/*" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-1.5 text-slate-400">
+            </div>
+            <div>
+              <span class="text-slate-400 block mb-1">Photo 4</span>
+              <input id="pImg4" type="file" accept="image/*" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-1.5 text-slate-400">
+            </div>
+            <div>
+              <span class="text-slate-400 block mb-1">Photo 5</span>
+              <input id="pImg5" type="file" accept="image/*" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-1.5 text-slate-400">
+            </div>
+          </div>
+        </div>
+
+        <textarea id="pDesc" rows="2" placeholder="Product details, fabric, stitching..." required class="sm:col-span-3 bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white"></textarea>
+
+        <button type="submit" id="btnPublishProd" class="sm:col-span-3 py-2.5 gold-gradient text-white font-bold rounded-xl shadow-md active:scale-95 transition">
+          Save & Publish to Live Store Worldwide
+        </button>
+      </form>
+
+      <div class="mt-4 pt-3 border-t border-slate-800">
+        <h4 class="text-[11px] font-bold text-slate-400 uppercase mb-2">Active Catalog Items</h4>
+        <div id="adminProductsListing" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: LIVE ORDERS -->
+    <div id="sec-orders" class="glass border border-slate-800 p-5 rounded-2xl hidden space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-truck-ramp-box"></i> Live Customer Orders & Complete Drop Location
+        </h2>
+        <span id="orderBadge" class="text-xs text-slate-400 font-bold">0 Orders</span>
+      </div>
+      <div id="adminOrdersListing" class="space-y-3"></div>
+    </div>
+
+    <!-- TAB 3: RETURN CLAIMS -->
+    <div id="sec-returns" class="glass border border-slate-800 p-5 rounded-2xl hidden space-y-4">
+      <h2 class="text-xs font-bold text-rose-400 uppercase tracking-wider flex items-center gap-2">
+        <i class="fa-solid fa-rotate-left"></i> Customer Return Claims & Defect Photos
+      </h2>
+      <div id="adminReturnsListing" class="space-y-3"></div>
+    </div>
+
+    <!-- TAB 4: USER MODERATION -->
+    <div id="sec-users" class="glass border border-slate-800 p-5 rounded-2xl hidden space-y-4">
+      <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+        <i class="fa-solid fa-users-gear"></i> Registered Customers (Ban, Unban & Password Change)
+      </h2>
+      <div id="adminUsersListing" class="space-y-2"></div>
+    </div>
+
+    <!-- TAB 5: ABOUT STORE & OWNER PROFILE -->
+    <div id="sec-aboutStore" class="glass border border-slate-800 p-5 rounded-2xl hidden space-y-4">
+      <h2 class="text-xs font-bold text-pink-400 uppercase tracking-wider flex items-center gap-2">
+        <i class="fa-solid fa-id-card-clip"></i> Edit About Store, Owner Details & Social Links
+      </h2>
+      <form onsubmit="updateAboutAndOwner(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div>
+          <label class="text-slate-400 block mb-1">Owner Full Name</label>
+          <input id="setOwnerName" type="text" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">Designation / Title</label>
+          <input id="setOwnerTitle" type="text" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="text-slate-400 block mb-1">Owner Photo (Upload new JPG to replace current photo)</label>
+          <input id="setOwnerPhotoFile" type="file" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-slate-400">
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="text-slate-400 block mb-1">Owner Bio / Founder Note</label>
+          <textarea id="setOwnerBio" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white"></textarea>
+        </div>
+
+        <div>
+          <label class="text-slate-400 block mb-1">Store Support Phone</label>
+          <input id="setStorePhone" type="text" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">Store Support Email</label>
+          <input id="setStoreEmail" type="email" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="text-slate-400 block mb-1">Store Headquarters Full Address</label>
+          <input id="setStoreAddress" type="text" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+
+        <div>
+          <label class="text-slate-400 block mb-1"><i class="fa-brands fa-instagram text-rose-500 mr-1"></i> Instagram URL</label>
+          <input id="setSocInsta" type="url" placeholder="https://instagram.com/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1"><i class="fa-brands fa-facebook text-blue-500 mr-1"></i> Facebook URL</label>
+          <input id="setSocFb" type="url" placeholder="https://facebook.com/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i> WhatsApp Link</label>
+          <input id="setSocWa" type="url" placeholder="https://wa.me/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1"><i class="fa-brands fa-youtube text-red-500 mr-1"></i> YouTube Channel</label>
+          <input id="setSocYt" type="url" placeholder="https://youtube.com/@..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+
+        <button type="submit" id="btnSaveAbout" class="sm:col-span-2 py-2.5 bg-pink-950/70 hover:bg-pink-900 text-pink-300 font-bold rounded-xl border border-pink-800 shadow active:scale-95 transition">
+          Save All Store & Owner Details Worldwide
+        </button>
+      </form>
+    </div>
+
+    <!-- TAB 6: SECURITY & PAYMENT UPI (WITH HIDE/UNHIDE PASSWORD & TOKEN) -->
+    <div id="sec-security" class="glass border border-slate-800 p-5 rounded-2xl hidden space-y-4">
+      <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved"></i> Master Credentials & Store UPI ID
+      </h2>
+      <form onsubmit="updateAdminSecurity(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+        <div>
+          <label class="text-slate-400 block mb-1">New Admin User ID</label>
+          <input id="setAdminId" type="email" placeholder="New Email ID" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+        
+        <div>
+          <label class="text-slate-400 block mb-1">New Master Password</label>
+          <div class="relative">
+            <input id="setAdminPass" type="password" placeholder="Leave blank to keep same" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 pr-9 text-white">
+            <button type="button" onclick="togglePass('setAdminPass', 'eyeNewPassIcon')" class="absolute right-3 top-2.5 text-slate-400">
+              <i id="eyeNewPassIcon" class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-slate-400 block mb-1">Store UPI ID (For Auto QR)</label>
+          <input id="setUpiId" type="text" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+        </div>
+
+        <button type="submit" id="btnSaveSecurity" class="sm:col-span-3 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl border border-slate-700 shadow active:scale-95 transition">
+          Update Security Credentials & Store UPI Worldwide
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="store.js"></script>
+  <script>
+    let db = null;
+    let failedAttempts = parseInt(localStorage.getItem("RL_ADMIN_FAILS") || "0");
+    let lockUntil = parseInt(localStorage.getItem("RL_ADMIN_LOCKED_UNTIL") || "0");
+
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function initAdmin() {
+      db = await window.engine.load();
+      checkAuth();
+    }
+
+    function togglePass(inputId, iconId) {
+      const f = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (f.type === 'password') {
+        f.type = 'text';
+        if (icon) icon.className = 'fa-solid fa-eye-slash';
+      } else {
+        f.type = 'password';
+        if (icon) icon.className = 'fa-solid fa-eye';
+      }
+    }
+
+    function checkAuth() {
+      if (sessionStorage.getItem("RL_ADMIN_SESSION") === "ACTIVE" && sessionStorage.getItem("RL_SECURE_TOKEN")) {
+        document.getElementById("adminAuthScreen").classList.add("hidden");
+        document.getElementById("adminConsoleScreen").classList.remove("hidden");
+        renderConsole();
+      }
+    }
+
+    async function handleSecureLogin(e) {
+      e.preventDefault();
+      const now = Date.now();
+      const err = document.getElementById("authErrorMsg");
+
+      if (now < lockUntil) {
+        const remainingMinutes = Math.ceil((lockUntil - now) / 60000);
+        err.textContent = `Security Lockout Active: Too many failed attempts. Try again in ${remainingMinutes} minute(s).`;
+        err.classList.remove("hidden");
+        return;
+      }
+
+      const id = document.getElementById("inAdminId").value.trim().toLowerCase();
+      const pass = document.getElementById("inAdminPass").value;
+      const token = document.getElementById("inAdminToken").value.trim();
+
+      if (!token.startsWith("ghp_")) {
+        err.textContent = "Invalid GitHub Token. Token must start with ghp_";
+        err.classList.remove("hidden");
+        return;
+      }
+
+      const inputIdHash = await sha256(id);
+      const inputPassHash = await sha256(pass);
+
+      const cfg = db.adminConfig;
+      const expectedIdHash = cfg.adminIdHash || "8b78ec2ad6dae1b2f4f107f9cbf561876800532f14624b7a12a52bb888a705e4";
+      const expectedPassHash = cfg.adminPassHash || "9e5c4a3ffb1fa0435ffea49a9042b4d5a9fa264dfa98e1cb1cfbc0b29ff04b28";
+
+      if (inputIdHash === expectedIdHash && inputPassHash === expectedPassHash) {
+        localStorage.removeItem("RL_ADMIN_FAILS");
+        localStorage.removeItem("RL_ADMIN_LOCKED_UNTIL");
+
+        sessionStorage.setItem("RL_ADMIN_SESSION", "ACTIVE");
+        sessionStorage.setItem("RL_SECURE_TOKEN", token);
+
+        document.getElementById("adminAuthScreen").classList.add("hidden");
+        document.getElementById("adminConsoleScreen").classList.remove("hidden");
+        renderConsole();
+      } else {
+        failedAttempts++;
+        localStorage.setItem("RL_ADMIN_FAILS", failedAttempts);
+
+        if (failedAttempts >= 3) {
+          const lockTime = Date.now() + 15 * 60 * 1000;
+          localStorage.setItem("RL_ADMIN_LOCKED_UNTIL", lockTime);
+          err.textContent = "Security Alert: 3 failed attempts! Portal locked for 15 minutes.";
+        } else {
+          err.textContent = `Access Denied: Invalid credentials (${3 - failedAttempts} attempt(s) remaining before security lockout).`;
+        }
+        err.classList.remove("hidden");
+      }
+    }
+
+    function logoutAdmin() {
+      sessionStorage.removeItem("RL_ADMIN_SESSION");
+      sessionStorage.removeItem("RL_SECURE_TOKEN");
+      location.reload();
+    }
+
+    function switchAdminTab(tabName) {
+      ['products', 'orders', 'returns', 'users', 'aboutStore', 'security'].forEach(t => {
+        document.getElementById(`sec-${t}`).classList.add('hidden');
+        document.getElementById(`tabBtn-${t}`).className = "nav-tab px-4 py-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 font-bold transition flex items-center gap-1.5 flex-shrink-0";
+      });
+      document.getElementById(`sec-${tabName}`).classList.remove('hidden');
+      document.getElementById(`tabBtn-${tabName}`).className = "nav-tab active px-4 py-2 rounded-xl border border-pink-500 bg-pink-600 text-white font-bold transition flex items-center gap-1.5 flex-shrink-0";
+    }
+
+    function renderConsole() {
+      const cfg = db.adminConfig;
+      document.getElementById("setUpiId").value = cfg.upiId || "";
+      document.getElementById("setStorePhone").value = cfg.storePhone || "";
+      document.getElementById("setStoreEmail").value = cfg.storeEmail || "";
+      document.getElementById("setStoreAddress").value = cfg.storeAddress || "";
+
+      if (cfg.socialLinks) {
+        document.getElementById("setSocInsta").value = cfg.socialLinks.instagram || "";
+        document.getElementById("setSocFb").value = cfg.socialLinks.facebook || "";
+        document.getElementById("setSocWa").value = cfg.socialLinks.whatsapp || "";
+        document.getElementById("setSocYt").value = cfg.socialLinks.youtube || "";
+      }
+
+      if (cfg.owner) {
+        document.getElementById("setOwnerName").value = cfg.owner.name || "";
+        document.getElementById("setOwnerTitle").value = cfg.owner.title || "";
+        document.getElementById("setOwnerBio").value = cfg.owner.bio || "";
+      }
+
+      // Orders & Returns
+      const oList = document.getElementById("adminOrdersListing");
+      const rList = document.getElementById("adminReturnsListing");
+      oList.innerHTML = "";
+      rList.innerHTML = "";
+
+      const orders = db.orders || [];
+      document.getElementById("orderBadge").textContent = `${orders.length} Orders`;
+
+      let returnCount = 0;
+
+      orders.forEach((o, idx) => {
+        const r = o.recipient || {};
+        const card = document.createElement("div");
+        card.className = "bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs space-y-3";
+        card.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between border-b border-slate-900 pb-2 gap-2">
+            <div>
+              <span class="font-bold text-amber-400">#${o.id}</span>
+              <span class="text-white font-bold ml-2">${o.productTitle} (Size: <span class="text-pink-400">${o.size}</span>) - ₹${o.price}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] text-pink-400 font-bold bg-pink-950/60 px-2.5 py-0.5 rounded-full">${o.status}</span>
+              <button type="button" onclick="approveOrder(${idx})" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded font-bold">Approve</button>
+              <button type="button" onclick="rejectOrder(${idx})" class="px-2.5 py-1 bg-red-600 hover:bg-red-500 text-white rounded font-bold">Reject</button>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800/80 text-[11px] space-y-1">
+            <p class="font-bold text-amber-300"><i class="fa-solid fa-location-dot mr-1"></i> Delivery Drop Details:</p>
+            <p class="text-slate-200">Recipient: <strong>${r.name || 'N/A'}</strong> | Primary: <strong>${r.phone || 'N/A'}</strong> ${r.altPhone ? `| Alt: <strong>${r.altPhone}</strong>` : ''}</p>
+            <p class="text-slate-300">House/Flat: ${r.flat || 'N/A'}, Area: ${r.village || 'N/A'}</p>
+            <p class="text-slate-300">Landmark: <span class="text-amber-400 font-semibold">${r.landmark || 'N/A'}</span></p>
+            <p class="text-slate-300">PO: ${r.po || 'N/A'} | PS: ${r.ps || 'N/A'} | Dist: ${r.district || 'N/A'} | PIN: <span class="font-bold text-white">${r.pin || 'N/A'}</span></p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+            <div>
+              <label class="text-[10px] text-slate-500 block">Current Hub / Location</label>
+              <input type="text" value="${o.trackingLocation}" onchange="updateOrderLocation(${idx}, this.value)" class="w-full bg-slate-950 border border-slate-800 rounded p-1 text-white">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-500 block">Delivery Time Text</label>
+              <input type="text" value="${o.deliverySchedule}" onchange="updateOrderSchedule(${idx}, this.value)" placeholder="e.g. Delivery Today / Tomorrow" class="w-full bg-slate-950 border border-slate-800 rounded p-1 text-white">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-500 block">Delivery Guy Contact Number</label>
+              <input type="tel" value="${o.deliveryBoyPhone || ''}" onchange="updateOrderDeliveryBoy(${idx}, this.value)" placeholder="10-digit number" class="w-full bg-slate-950 border border-slate-800 rounded p-1 text-white">
+            </div>
+          </div>
+        `;
+        oList.appendChild(card);
+
+        if (o.returnRequest) {
+          returnCount++;
+          const retCard = document.createElement("div");
+          retCard.className = "bg-rose-950/30 p-4 rounded-2xl border border-rose-900 text-xs space-y-2";
+          retCard.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-rose-400">Order #${o.id} Return Claim</span>
+              <span class="text-[10px] font-bold text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded">${o.returnRequest.status}</span>
+            </div>
+            <p class="text-slate-300">Customer Reason: ${o.returnRequest.reason}</p>
+            <img src="${o.returnRequest.photo}" class="w-24 h-24 object-cover rounded-lg border border-rose-800">
+            <div class="flex gap-2 pt-2">
+              <button type="button" onclick="resolveReturn(${idx}, 'Accepted')" class="px-3 py-1 bg-emerald-600 text-white rounded-lg font-bold">Accept Return</button>
+              <button type="button" onclick="resolveReturn(${idx}, 'Rejected')" class="px-3 py-1 bg-red-600 text-white rounded-lg font-bold">Reject Return</button>
+            </div>
+          `;
+          rList.appendChild(retCard);
+        }
+      });
+
+      if (returnCount === 0) {
+        rList.innerHTML = `<p class="text-xs text-slate-500">No pending return claims.</p>`;
+      }
+
+      // Products
+      const pList = document.getElementById("adminProductsListing");
+      pList.innerHTML = "";
+      (db.products || []).forEach((p, idx) => {
+        const div = document.createElement("div");
+        div.className = "flex items-center justify-between p-2.5 bg-slate-950 rounded-xl border border-slate-800 text-xs";
+        div.innerHTML = `
+          <div class="flex items-center gap-3">
+            <img src="${p.images[0]}" class="w-10 h-10 rounded-lg object-cover">
+            <div>
+              <p class="font-bold text-white">${p.title}</p>
+              <p class="text-[10px] text-slate-400">₹${p.price} • ${p.category} • Sizes: ${p.sizes.join(", ")} • Photos: ${p.images.length}</p>
+            </div>
+          </div>
+          <button type="button" onclick="deleteProduct(${idx})" class="text-red-400 hover:text-red-300 text-xs px-2.5 py-1 bg-red-950/40 border border-red-800 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+        `;
+        pList.appendChild(div);
+      });
+
+      // Users
+      const uList = document.getElementById("adminUsersListing");
+      uList.innerHTML = "";
+      const users = db.users || [];
+      if (users.length === 0) {
+        uList.innerHTML = `<p class="text-xs text-slate-500">No registered customers yet.</p>`;
+      } else {
+        users.forEach((u, idx) => {
+          const row = document.createElement("div");
+          row.className = "flex items-center justify-between p-2.5 bg-slate-950 rounded-xl border border-slate-800 text-xs";
+          row.innerHTML = `
+            <div>
+              <span class="font-bold text-white">${u.name}</span>
+              <span class="text-slate-400 ml-2">Phone: ${u.phone}</span>
+              <span class="text-slate-500 ml-2">Pass: ${u.password}</span>
+              ${u.isBanned ? `<span class="text-red-400 font-bold ml-2">[BANNED]</span>` : ''}
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="toggleBanUser(${idx})" class="px-2 py-0.5 rounded text-[11px] ${u.isBanned ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'}">
+                ${u.isBanned ? 'Unban' : 'Ban'}
+              </button>
+              <button type="button" onclick="changeUserPass(${idx})" class="text-cyan-400 hover:underline text-[11px]">Set Pass</button>
+              <button type="button" onclick="deleteUser(${idx})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          `;
+          uList.appendChild(row);
+        });
+      }
+    }
+
+    // Auto Image Compressor
+    function compressImage(file, maxDimension = 500, quality = 0.7) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            let w = img.width, h = img.height;
+            if (w > h) {
+              if (w > maxDimension) { h *= maxDimension / w; w = maxDimension; }
+            } else {
+              if (h > maxDimension) { w *= maxDimension / h; h = maxDimension; }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          };
+          img.src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function submitNewProduct(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnPublishProd");
+      btn.disabled = true;
+      btn.textContent = "Compressing & Syncing to Cloud...";
+
+      const title = document.getElementById("pTitle").value.trim();
+      const category = document.getElementById("pCategory").value;
+      const price = parseFloat(document.getElementById("pPrice").value);
+      const origPrice = parseFloat(document.getElementById("pOrigPrice").value);
+      const sizes = document.getElementById("pSizes").value.split(",").map(s => s.trim()).filter(Boolean);
+      const desc = document.getElementById("pDesc").value.trim();
+
+      const images = [];
+      for (let i = 1; i <= 5; i++) {
+        const fileInput = document.getElementById(`pImg${i}`);
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+          const compressed = await compressImage(fileInput.files[0], 500, 0.7);
+          images.push(compressed);
+        }
+      }
+
+      if (images.length === 0) {
+        alert("Please upload at least Photo 1.");
+        btn.disabled = false;
+        btn.textContent = "Save & Publish to Live Store Worldwide";
+        return;
+      }
+
+      const discPercent = Math.round(((origPrice - price) / origPrice) * 100);
+
+      const newProd = {
+        id: "prod_" + Date.now(),
+        title,
+        category,
+        price,
+        originalPrice: origPrice,
+        discount: `${discPercent}% OFF`,
+        sizes,
+        images,
+        description: desc,
+        rating: 5.0
+      };
+
+      if (!db.products) db.products = [];
+      db.products.unshift(newProd);
+
+      const syncResult = await window.engine.syncToCloud(`Published Product: ${title}`);
+      e.target.reset();
+      btn.disabled = false;
+      btn.textContent = "Save & Publish to Live Store Worldwide";
+
+      alert(syncResult.message);
+      renderConsole();
+    }
+
+    async function updateAboutAndOwner(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnSaveAbout");
+      btn.disabled = true;
+      btn.textContent = "Saving to Cloud...";
+
+      const file = document.getElementById("setOwnerPhotoFile").files[0];
+      let photoUrl = db.adminConfig.owner?.photo || "";
+
+      if (file) {
+        photoUrl = await compressImage(file, 400, 0.75);
+      }
+
+      db.adminConfig.owner = {
+        name: document.getElementById("setOwnerName").value.trim(),
+        title: document.getElementById("setOwnerTitle").value.trim(),
+        photo: photoUrl,
+        bio: document.getElementById("setOwnerBio").value.trim()
+      };
+
+      db.adminConfig.storePhone = document.getElementById("setStorePhone").value.trim();
+      db.adminConfig.storeEmail = document.getElementById("setStoreEmail").value.trim();
+      db.adminConfig.storeAddress = document.getElementById("setStoreAddress").value.trim();
+
+      db.adminConfig.socialLinks = {
+        instagram: document.getElementById("setSocInsta").value.trim(),
+        facebook: document.getElementById("setSocFb").value.trim(),
+        whatsapp: document.getElementById("setSocWa").value.trim(),
+        youtube: document.getElementById("setSocYt").value.trim()
+      };
+
+      const syncResult = await window.engine.syncToCloud("Updated About Store & Owner Profile");
+      btn.disabled = false;
+      btn.textContent = "Save All Store & Owner Details Worldwide";
+
+      alert(syncResult.message);
+      renderConsole();
+    }
+
+    async function updateAdminSecurity(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnSaveSecurity");
+      btn.disabled = true;
+
+      const newId = document.getElementById("setAdminId").value.trim().toLowerCase();
+      const newPass = document.getElementById("setAdminPass").value;
+      const newUpi = document.getElementById("setUpiId").value.trim();
+
+      if (newId) {
+        db.adminConfig.adminIdHash = await sha256(newId);
+      }
+      if (newPass) {
+        db.adminConfig.adminPassHash = await sha256(newPass);
+      }
+      if (newUpi) {
+        db.adminConfig.upiId = newUpi;
+      }
+
+      const syncResult = await window.engine.syncToCloud("Updated Security Credentials & UPI ID");
+      btn.disabled = false;
+      alert(syncResult.message);
+      renderConsole();
+    }
+
+    async function approveOrder(idx) {
+      db.orders[idx].status = "Approved & Confirmed";
+      await window.engine.syncToCloud(`Approved Order #${db.orders[idx].id}`);
+      renderConsole();
+      alert("Order approved and synced globally!");
+    }
+
+    async function rejectOrder(idx) {
+      db.orders[idx].status = "Rejected by Store";
+      await window.engine.syncToCloud(`Rejected Order #${db.orders[idx].id}`);
+      renderConsole();
+      alert("Order marked as Rejected and synced globally.");
+    }
+
+    async function updateOrderLocation(idx, loc) {
+      db.orders[idx].trackingLocation = loc;
+      await window.engine.syncToCloud(`Updated Location for Order #${db.orders[idx].id}`);
+    }
+
+    async function updateOrderSchedule(idx, timeText) {
+      db.orders[idx].deliverySchedule = timeText;
+      if (timeText.toLowerCase().includes("delivered")) {
+        db.orders[idx].status = "Delivered";
+      }
+      await window.engine.syncToCloud(`Updated Schedule for Order #${db.orders[idx].id}`);
+    }
+
+    async function updateOrderDeliveryBoy(idx, phone) {
+      db.orders[idx].deliveryBoyPhone = phone;
+      await window.engine.syncToCloud(`Updated Delivery Contact for Order #${db.orders[idx].id}`);
+    }
+
+    async function resolveReturn(idx, decision) {
+      db.orders[idx].returnRequest.status = decision;
+      await window.engine.syncToCloud(`Resolved Return Claim for Order #${db.orders[idx].id}`);
+      alert(`Return claim marked as ${decision} and synced live.`);
+      renderConsole();
+    }
+
+    async function deleteProduct(idx) {
+      if (confirm("Delete product from live catalog?")) {
+        const removed = db.products.splice(idx, 1);
+        await window.engine.syncToCloud(`Deleted Product: ${removed[0]?.title || 'Product'}`);
+        renderConsole();
+      }
+    }
+
+    async function toggleBanUser(idx) {
+      db.users[idx].isBanned = !db.users[idx].isBanned;
+      await window.engine.syncToCloud(`Updated Ban Status for User: ${db.users[idx].phone}`);
+      renderConsole();
+    }
+
+    async function changeUserPass(idx) {
+      const p = prompt("Enter new password for this customer:");
+      if (p) {
+        db.users[idx].password = p;
+        await window.engine.syncToCloud(`Admin Reset Password for User: ${db.users[idx].phone}`);
+        renderConsole();
+      }
+    }
+
+    async function deleteUser(idx) {
+      if (confirm("Permanently delete this customer account?")) {
+        const removed = db.users.splice(idx, 1);
+        await window.engine.syncToCloud(`Deleted Customer: ${removed[0]?.phone}`);
+        renderConsole();
+      }
+    }
+
+    initAdmin();
+  </script>
+</body>
+</html>
