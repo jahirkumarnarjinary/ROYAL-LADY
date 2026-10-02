@@ -45,27 +45,6 @@
   ],
   "products": [
     {
-      "id": "prod_1",
-      "title": "Royal Anarkali Embroidered Pure Silk Kurti Set",
-      "category": "Kurtis",
-      "price": 2499,
-      "originalPrice": 4999,
-      "discount": "50% OFF",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL",
-        "XXL"
-      ],
-      "images": [
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80",
-        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=600&q=80"
-      ],
-      "description": "Handcrafted pure silk designer Kurti with intricate zari embroidery, designed for festive occasions.",
-      "rating": 4.9
-    },
-    {
       "id": "prod_2",
       "title": "Bridal Banarasi Silk Zari Woven Saree",
       "category": "Sarees",
