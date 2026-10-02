@@ -45,22 +45,6 @@
   ],
   "products": [
     {
-      "id": "prod_2",
-      "title": "Bridal Banarasi Silk Zari Woven Saree",
-      "category": "Sarees",
-      "price": 4299,
-      "originalPrice": 8999,
-      "discount": "52% OFF",
-      "sizes": [
-        "Free Size"
-      ],
-      "images": [
-        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80"
-      ],
-      "description": "Traditional gold zari woven crimson Banarasi silk saree with matching unstitched blouse piece.",
-      "rating": 5
-    },
-    {
       "id": "prod_3",
       "title": "Heritage Bridal Velvet Embroidered Lehenga Choli",
       "category": "Lehengas",
